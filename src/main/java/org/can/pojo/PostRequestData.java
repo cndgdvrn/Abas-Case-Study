@@ -31,8 +31,6 @@ public class PostRequestData {
 
     public static class Data{
         private int year;
-
-
         private double price;
         private String CPUModel;
         private String hardDiskSize;

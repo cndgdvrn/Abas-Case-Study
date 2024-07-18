@@ -36,30 +36,50 @@ public class ProductQuestion {
     }
 
     public static void averagePriceOfProduct(List<Order> orderList) {
-        Map<Integer, List<Double>> productPriceMap = new HashMap<>();
+        Map<Integer, double[]> productTotalsMap = new HashMap<>();
+
         for (Order order : orderList) {
-            if (productPriceMap.containsKey(order.getProductId())) {
-                List<Double> certainProductPriceList = productPriceMap.get(order.getProductId());
-                certainProductPriceList.add(order.getUnitPrice());
-            } else {
-                List<Double> certainProductPriceList = new ArrayList<>();
-                certainProductPriceList.add(order.getUnitPrice());
-                productPriceMap.put(order.getProductId(), certainProductPriceList);
-            }
+            productTotalsMap.computeIfAbsent(order.getProductId(), k -> new double[2]);
+            double[] totals = productTotalsMap.get(order.getProductId());
+            totals[0] += order.getUnitPrice() * order.getQuantity(); // toplam maliyet
+            totals[1] += order.getQuantity(); // toplam miktar
         }
+
         System.out.println("-------------------------------------------------------------------------------------------------------------");
         System.out.println("1.c) Mal bazlı ortalama fiyatlar:");
-        productPriceMap.forEach((productId, list) -> {
-            double totalPrice = 0;
-            for (Double unitPrice : list) {
-                totalPrice += unitPrice;
-            }
 
-            double averagePrice = totalPrice / list.size();
+        // Ortalama fiyatı hesaplayıp yazdırıyoruz
+        productTotalsMap.forEach((productId, totals) -> {
+            double totalCost = totals[0];
+            double totalQuantity = totals[1];
+            double averagePrice = totalCost / totalQuantity;
             String formattedAveragePrice = String.format("%.3f", averagePrice);
-
             System.out.println("Mal bazlı ortalama fiyat -> " + productId + ": " + formattedAveragePrice);
         });
+//        Map<Integer, List<Double>> productPriceMap = new HashMap<>();
+//        for (Order order : orderList) {
+//            if (productPriceMap.containsKey(order.getProductId())) {
+//                List<Double> certainProductPriceList = productPriceMap.get(order.getProductId());
+//                certainProductPriceList.add(order.getUnitPrice());
+//            } else {
+//                List<Double> certainProductPriceList = new ArrayList<>();
+//                certainProductPriceList.add(order.getUnitPrice());
+//                productPriceMap.put(order.getProductId(), certainProductPriceList);
+//            }
+//        }
+//        System.out.println("-------------------------------------------------------------------------------------------------------------");
+//        System.out.println("1.c) Mal bazlı ortalama fiyatlar:");
+//        productPriceMap.forEach((productId, list) -> {
+//            double totalPrice = 0;
+//            for (Double unitPrice : list) {
+//                totalPrice += unitPrice;
+//            }
+//
+//            double averagePrice = totalPrice / list.size();
+//            String formattedAveragePrice = String.format("%.3f", averagePrice);
+//
+//            System.out.println("Mal bazlı ortalama fiyat -> " + productId + ": " + formattedAveragePrice);
+//        });
     }
 
     public static void quantityOfProduct(List<Order> orderList) {
